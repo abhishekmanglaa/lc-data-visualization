@@ -2,6 +2,10 @@
 
 Lending Club is a Peer-Peer lending & alternative venture. 
 
+## Check out the Rmd file.
+
+[Here's the Link to the Rmd](https://github.com/abhishekmanglaa/lc-data-visualization/blob/main/lc-visualization.md)
+
 ## Installation
 
 Using tidyverse and the strength of ggplot2, making impacting visualizations.
