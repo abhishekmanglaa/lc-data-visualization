@@ -1,7 +1,7 @@
 Lending Club Data
 ================
 
-Scatter plots
+## Part 1: Scatter plots
 
 1)  A scatter plot relating the loan amount (the amount that each
     borrower requested) to the funded amount (the amount funded by
@@ -24,7 +24,7 @@ ggplot(lc, aes(x = loan_amnt, y = funded_amnt_inv)) +
   labs(caption = "Source: Lending Club")
 ```
 
-![](lc-visualization_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->
+![](lc-visualization_files/figure-gfm/Scatter%20Plot%20-%201-1.png)<!-- -->
 
 2)  A plot exploring the relationship between annual income (the
     borrower’s income) and loan amount (the amount that the borrower
@@ -50,7 +50,7 @@ lc %>%
 
     ## `geom_smooth()` using formula 'y ~ x'
 
-![](lc-visualization_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
+![](lc-visualization_files/figure-gfm/Scatter%20plot%20-%202-1.png)<!-- -->
 
 3)  Bubble Chart and Colors
 
@@ -83,7 +83,7 @@ lc %>%
        caption = " Source: Lending Club")
 ```
 
-![](lc-visualization_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+![](lc-visualization_files/figure-gfm/Bubble%20Chart-1.png)<!-- -->
 
 ## Part 2: Distributions
 
@@ -110,7 +110,7 @@ ggplot(lc, aes(x = loan_amnt)) +
   labs(caption = "Source: Lending Club")
 ```
 
-![](lc-visualization_files/figure-gfm/question2a-1.png)<!-- -->
+![](lc-visualization_files/figure-gfm/Histogram%20-%201-1.png)<!-- -->
 
 2)  Comparing the distribution of the loan amount by the homeownership
     status by creating a chart that shows some distribution information
@@ -140,7 +140,7 @@ lc %>%
 
     ## Warning: Removed 3 rows containing non-finite values (stat_boxplot).
 
-![](lc-visualization_files/figure-gfm/question2b-1.png)<!-- -->
+![](lc-visualization_files/figure-gfm/Boxplot-1.png)<!-- -->
 
 ## Part 3: Categorical plot
 
@@ -175,7 +175,7 @@ lc %>%
   labs(caption = "Source: Lending Club")
 ```
 
-![](lc-visualization_files/figure-gfm/question3a-1.png)<!-- -->
+![](lc-visualization_files/figure-gfm/Bar%20Chart%20-%201-1.png)<!-- -->
 
 2)  The average loan amount by investment grade for mortgage holders
     vs. renters, in 2011.
@@ -204,7 +204,7 @@ lc %>%
   scale_y_continuous(expand = c(0,0))
 ```
 
-![](lc-visualization_files/figure-gfm/question3b-1.png)<!-- -->
+![](lc-visualization_files/figure-gfm/Bar%20Chart%20-%202-1.png)<!-- -->
 
 3)  The total loan amount by investment grade in 2011. Break each year
     into mortgage holders vs. all others.
@@ -233,4 +233,133 @@ lc %>%
   scale_fill_manual(values= c(MORTGAGE = "#5DADE2", OTHER = "#A6ACAF"))
 ```
 
-![](lc-visualization_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+![](lc-visualization_files/figure-gfm/Stacked%20Bar%20Chart-1.png)<!-- -->
+
+## Part 4: More Bar Charts
+
+1)  Pyramid Chart Using patchwork to create a pyramid chart. Place a
+    label for the LoanGrade in the center, and display the number of
+    loans, organized by the purpose of the debt(group debt consolidation
+    and credit cards together versus all other loan
+purposes)
+
+<!-- end list -->
+
+``` r
+pyramid_data <- lc%>%mutate(debt_purpose=ifelse(purpose%in%c('credit_card','debt_consolidation'),"Debt","Other"))%>%
+  group_by(grade, debt_purpose)%>%
+  summarise(numberOfLoans =n())%>%
+  pivot_wider(names_from = debt_purpose,values_from = numberOfLoans)%>%
+  mutate(Other =-Other)%>%
+  pivot_longer(Debt:Other, names_to="loan_purpose",values_to="n")%>%
+  na.omit()%>% 
+  ungroup()%>%
+  mutate(grade =fct_relevel(as.factor(grade),
+                            levels=rev(levels(as.factor(grade)))))
+```
+
+    ## Warning: Outer names are only allowed for unnamed scalar atomic inputs
+
+``` r
+debt_chart <- pyramid_data %>% 
+  filter(loan_purpose=='Debt') %>% 
+  ggplot(aes(y=grade, x=n)) + 
+  geom_col(fill="royalblue") + 
+  geom_vline(xintercept = 0) + 
+  labs(x="Debt") + 
+  theme(axis.title.y = element_blank(),
+        axis.title.x =element_text(color="royalblue", face="bold"),
+        axis.ticks =element_blank(),
+        panel.grid.major.x =element_line(color="grey90", linetype=2),
+        panel.background =element_rect(fill="white"),
+        axis.text.y =element_text(hjust=0.5,face="bold")) + 
+  scale_x_continuous(breaks=c(0,1000,2000,3000,4000,5000,6000,7000),
+                     labels=c("0","1K","2K","3K","4K","5K","6K","7K"),
+                     limits =c(0,7500),position = "top")
+
+other_chart <- pyramid_data %>% 
+  filter(loan_purpose=='Other') %>% 
+  ggplot(aes(y=grade, x=n)) + 
+  geom_col(fill="grey70") + 
+  geom_vline(xintercept = 0) + 
+  labs(x="Other Purposes") + 
+  theme(axis.title.y =element_blank(),
+        axis.title.x =element_text(color="grey70", face="bold"),
+        axis.text.y =element_blank(),
+        axis.ticks =element_blank(),
+        panel.grid.major.x =element_line(color="grey90", linetype=2),
+        panel.background=element_rect(fill="white")) + 
+  scale_x_continuous(breaks=c(0,-1000,-2000,-3000,-4000,-5000,-6000,-7000),
+                     labels=c("0","1K","2K","3K","4K","5K","6K","7K"),
+                     limits =c(-7500,0),
+                     position="top")
+
+other_chart + debt_chart + 
+  plot_annotation(title ='Lending Club Loans',
+                  subtitle ='Loans to pay down or consolidate debt are less likely to be Grade A loans than loans for\nother purposes.',
+                  caption ='Source: Lending Club',
+                  theme =theme(plot.title =element_text(size = 14),
+                               plot.subtitle=element_text(size=12, face="italic"),
+                               plot.caption =element_text(face="italic")))
+```
+
+![](lc-visualization_files/figure-gfm/Pyramid%20Chart-1.png)<!-- -->
+
+## Part 5: Time Series
+
+1)  Multiple Line Chart: Creating a line chart of the average loan
+    amount in each of the loangrades over time. Highlighting loan grade
+    A and keep the other shades light grey.
+
+<!-- end list -->
+
+``` r
+#fix the issue date
+lc$issue_date = as.Date(paste(lc$issue_d,"-01",sep=""), format="%y-%b-%d")
+
+lc %>% 
+  select(grade, loan_amnt, issue_date) %>%
+  drop_na() %>%
+  group_by(issue_date, grade) %>%
+  summarise(average_loan_amnt = mean(loan_amnt)) %>%
+  mutate(Grade = ifelse(grade == 'A', 'A', 'Others')) %>%
+  ggplot(aes(x = issue_date, y = average_loan_amnt, group = grade, color = Grade)) +
+  geom_line() +
+  scale_color_manual(values=c("steelblue", "lightgrey")) +
+  theme(panel.background = element_blank() , axis.line = element_line(colour = 'black'),
+        plot.caption = element_text(face = "italic")) +
+  xlab("Issue Date") +
+  ylab("Average Loan Amount") + 
+  ggtitle("Average Loan Amount Over the years for grade A vs Others") +
+  labs(caption = "Source: Lending Club Data")
+```
+
+![](lc-visualization_files/figure-gfm/Line%20Chart-1.png)<!-- -->
+
+2)  Area Chart: An area chart showing the total number of loans for
+    debt-relatedcategories (credit cards and debt consolidation), versus
+    all other types over time.
+
+<!-- end list -->
+
+``` r
+lc %>% 
+  select(purpose,issue_date) %>%
+  drop_na() %>%
+  mutate(color_purpose = ifelse(purpose == 'credit_card' | purpose == 'debt_consolidation', 'Debt-Related', 'Others')) %>%
+  group_by(issue_date, color_purpose) %>%
+  summarise(count = n()) %>%
+  ggplot(aes(x = issue_date, y = count, fill = color_purpose)) +
+  geom_area(alpha = .5, size = .5, color= 'white') +
+  theme(panel.background = element_blank(), 
+        axis.line = element_line(colour = 'black')) +
+  xlab("Issue Date") +
+  ylab("Number of Loans") + 
+  ggtitle("Number of Loans issued for Debt vs Non-Debt Purposes") +
+  labs(fill = "Purpose",
+       caption = "Source: Lending Club Data") +
+  scale_fill_manual(values=c("steelblue", "lightgrey")) +
+  theme(plot.caption = element_text(face = "italic"))
+```
+
+![](lc-visualization_files/figure-gfm/Area%20Chart-1.png)<!-- -->
