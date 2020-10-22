@@ -41,3 +41,22 @@ lc %>%
   theme(panel.background = element_blank() , axis.line = element_line(colour = 'black'))
 ```
 
+c) Bubble Chart and Colors
+
+```{r}
+lc %>% 
+  select(loan_amnt, int_rate, grade, dti) %>%
+  drop_na() %>%
+  mutate(int_rate_numeric = as.numeric(gsub("\\%", "", int_rate))) %>%
+  ggplot( aes(x = dti, y = as.numeric(int_rate_numeric), size = loan_amnt, color = grade)) + 
+  geom_point(alpha=0.1) +
+  xlab("Debt-to-Income") + 
+  ylab("Interest Rate") + 
+  ggtitle("Interest Rate vs DTI") +
+  theme(panel.background = element_blank() , axis.line = element_line(colour = 'black')) +
+  scale_x_continuous(breaks=c(0,10,20,30), labels = c('0','10','20','30'), limits = c(0,30)) +
+  scale_y_continuous(breaks=c(5,10,15,20,25), labels = c('5','10','15','20','25'), limits = c(5,25)) +
+  labs(size = "Loan Amount", color = "Grade")
+```
+
+
