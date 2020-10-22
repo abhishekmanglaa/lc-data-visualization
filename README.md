@@ -9,6 +9,7 @@ Using tidyverse and the strength of ggplot2, making impacting visualizations.
 ```bash
 library(tidyverse)
 ```
+You can also knit the file to a html document
 
 ## Usage
 
