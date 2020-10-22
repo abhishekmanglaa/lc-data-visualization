@@ -17,6 +17,8 @@ You can also knit the file to a html document
 install.packages('tidyverse')
 ```
 
+About R Markdown - https://r4ds.had.co.nz/r-markdown.html#r-markdown-basics
+
 ## Data
 
 Data is located as Data/LendingClub_LoanStats_2011_v2.csv
