@@ -29,6 +29,7 @@ ggplot(lc, aes(x = loan_amnt, y = funded_amnt_inv)) +
         plot.caption = element_text(face = "italic")) +
   labs(caption = "Source: Lending Club")
 ```
+
 b) A plot exploring the relationship between annual income (the borrower's income) and loan amount (the amount that the borrower requests). Use the logarithmic scale.
 
 ```{r}
