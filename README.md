@@ -1,6 +1,6 @@
 # Lending Club Visualizations
 
-Lending Club is a P-P venture. 
+Lending Club is a Peer-Peer lending & alternative venture. 
 
 ## Installation
 
@@ -20,7 +20,10 @@ install.packages('tidyverse')
 ## Data
 
 Data is located as Data/LendingClub_LoanStats_2011_v2.csv
+
 Dictionary is located as Data/LCDataDictionary.xlsx
+
+Link to Kaggle - https://www.kaggle.com/wordsforthewise/lending-club
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
