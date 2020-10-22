@@ -1,24 +1,18 @@
----
-title: "Lending Club Data"
-output: github_document
----
-\vspace{0.25in}
-
-
-```{r setup, include=FALSE}
-library(tidyverse)
-knitr::opts_chunk$set(echo = TRUE)
-
-#make sure to set your working directory!
-lc = read_csv('Data/LendingClub_LoanStats_2011_v2.csv')
-```
+Lending Club Data
+================
 
 Scatter plots
 
-a) A scatter plot relating the loan amount (the amount that each borrower requested) to the funded amount (the amount funded by investors)\
-To make an attractive chart, you will have to (at least) change the labels on the axis, the alpha values, and the background, gridlines, etc.
+1)  A scatter plot relating the loan amount (the amount that each
+    borrower requested) to the funded amount (the amount funded by
+    investors)  
+    To make an attractive chart, you will have to (at least) change the
+    labels on the axis, the alpha values, and the background, gridlines,
+    etc.
 
-```{r}
+<!-- end list -->
+
+``` r
 ggplot(lc, aes(x = loan_amnt, y = funded_amnt_inv)) + 
   geom_point(alpha = 0.3, na.rm = TRUE, color = "#00AFBB") +
   xlab("Requested Loan Amount") + 
@@ -29,9 +23,13 @@ ggplot(lc, aes(x = loan_amnt, y = funded_amnt_inv)) +
         plot.caption = element_text(face = "italic")) +
   labs(caption = "Source: Lending Club")
 ```
-b) A plot exploring the relationship between annual income (the borrower's income) and loan amount (the amount that the borrower requests). Use the logarithmic scale.
 
-```{r}
+![](lc-visualization_files/figure-gfm/unnamed-chunk-1-1.png)<!-- --> b)
+A plot exploring the relationship between annual income (the borrower’s
+income) and loan amount (the amount that the borrower requests). Use the
+logarithmic scale.
+
+``` r
 lc %>%
   select(annual_inc, loan_amnt) %>%
   drop_na() %>%
@@ -47,9 +45,15 @@ lc %>%
   labs(captions = " Source: Lending Club")
 ```
 
-c) Bubble Chart and Colors
+    ## `geom_smooth()` using formula 'y ~ x'
 
-```{r}
+![](lc-visualization_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
+
+3)  Bubble Chart and Colors
+
+<!-- end list -->
+
+``` r
 lc %>% 
   select(loan_amnt, int_rate, grade, dti) %>%
   drop_na() %>%
@@ -76,11 +80,17 @@ lc %>%
        caption = " Source: Lending Club")
 ```
 
+![](lc-visualization_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+
 ## Part 2: Distributions
 
-a) A histogram to show the distribution of the Loan Amount (the amount requested by the borrower). Make sure to change the border color of the bars and change the x and y-axis labels.
+1)  A histogram to show the distribution of the Loan Amount (the amount
+    requested by the borrower). Make sure to change the border color of
+    the bars and change the x and y-axis labels.
 
-```{r question2a}
+<!-- end list -->
+
+``` r
 ggplot(lc, aes(x = loan_amnt)) +
   geom_histogram(bins = 15, na.rm = TRUE, fill="#69b3a2", color="white") +
   ggtitle("Histogram of Loan Amount") +
@@ -97,11 +107,17 @@ ggplot(lc, aes(x = loan_amnt)) +
   labs(caption = "Source: Lending Club")
 ```
 
+![](lc-visualization_files/figure-gfm/question2a-1.png)<!-- -->
 
-b) Comparing the distribution of the loan amount by the homeownership status by creating a chart that shows some distribution information for each level of home ownership. In particular, make sure that your chart describes the median loan amount for each home ownership status.
+2)  Comparing the distribution of the loan amount by the homeownership
+    status by creating a chart that shows some distribution information
+    for each level of home ownership. In particular, make sure that your
+    chart describes the median loan amount for each home ownership
+    status.
 
-```{r question2b}
+<!-- end list -->
 
+``` r
 lc %>% 
   select(home_ownership, loan_amnt)  %>%
   ggplot(aes(x = loan_amnt, y = home_ownership)) +
@@ -117,14 +133,21 @@ lc %>%
         axis.ticks.y = element_blank(),
         plot.caption = element_text(face = "italic")) +
   labs(caption = "Source: Lending Club")
-
 ```
+
+    ## Warning: Removed 3 rows containing non-finite values (stat_boxplot).
+
+![](lc-visualization_files/figure-gfm/question2b-1.png)<!-- -->
 
 ## Part 3: Categorical plot
 
-a) A bar chart with the average Loan Amount by Investment Grade for 2011. Ensure that readers can easily identify the Loan Grade with the lowest average Loan Amount.
-```{r question3a}
+1)  A bar chart with the average Loan Amount by Investment Grade for
+    2011. Ensure that readers can easily identify the Loan Grade with
+    the lowest average Loan Amount.
 
+<!-- end list -->
+
+``` r
 lc %>% 
   filter(issue_year == 2011) %>%
   select(loan_amnt,grade) %>%
@@ -147,12 +170,16 @@ lc %>%
   ggtitle("Investment Grade Vs Loan Amount") +
   scale_y_continuous(expand = c(0,0)) +
   labs(caption = "Source: Lending Club")
-
 ```
 
-b) The average loan amount by investment grade for mortgage holders vs. renters, in 2011. 
-```{r question3b}
+![](lc-visualization_files/figure-gfm/question3a-1.png)<!-- -->
 
+2)  The average loan amount by investment grade for mortgage holders
+    vs. renters, in 2011.
+
+<!-- end list -->
+
+``` r
 lc %>% 
   filter(issue_year == 2011, home_ownership =='RENT' | home_ownership == 'MORTGAGE') %>%
   select(loan_amnt,grade,home_ownership) %>%
@@ -172,13 +199,16 @@ lc %>%
        caption = "Source: Lending Club") +
   scale_fill_manual(values = c(MORTGAGE = "#117A65", RENT = "#AEB6BF")) +
   scale_y_continuous(expand = c(0,0))
-
 ```
 
+![](lc-visualization_files/figure-gfm/question3b-1.png)<!-- -->
 
-c) The total loan amount by investment grade in 2011. Break each year into mortgage holders vs. all others. 
-```{r}
+3)  The total loan amount by investment grade in 2011. Break each year
+    into mortgage holders vs. all others.
 
+<!-- end list -->
+
+``` r
 lc %>% 
   filter(issue_year == 2011) %>%
   select(loan_amnt,grade,home_ownership) %>%
@@ -198,9 +228,6 @@ lc %>%
   labs(fill = "Home Ownership", caption = "Source: Lending Club") +
   scale_y_continuous(expand = c(0,0)) +
   scale_fill_manual(values= c(MORTGAGE = "#5DADE2", OTHER = "#A6ACAF"))
-
 ```
 
-
-
-
+![](lc-visualization_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
