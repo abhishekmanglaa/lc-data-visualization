@@ -1,0 +1,43 @@
+---
+title: "Lending Club Data"
+output: html_document
+---
+\vspace{0.25in}
+
+
+```{r setup, include=FALSE}
+library(tidyverse)
+knitr::opts_chunk$set(echo = TRUE)
+
+#make sure to set your working directory!
+lc = read_csv('Data/LendingClub_LoanStats_2011_v2.csv')
+```
+
+Scatter plots
+
+a) A scatter plot relating the loan amount (the amount that each borrower requested) to the funded amount (the amount funded by investors)\
+To make an attractive chart, you will have to (at least) change the labels on the axis, the alpha values, and the background, gridlines, etc.
+
+```{r}
+ggplot(lc, aes(x = loan_amnt, y = funded_amnt_inv)) + 
+  geom_point(alpha = 0.3, na.rm = TRUE, color = "#00AFBB") +
+  xlab("Requested Loan Amount") + 
+  ylab("Amount Funded by Investors") +
+  ggtitle("Requested vs Funded") +
+  theme(panel.background = element_blank() , axis.line = element_line(colour = 'black'))
+```
+b) A plot exploring the relationship between annual income (the borrower's income) and loan amount (the amount that the borrower requests). Use the logarithmic scale.
+
+```{r}
+lc %>%
+  select(annual_inc, loan_amnt) %>%
+  drop_na() %>%
+  ggplot(aes(x = log(annual_inc), y = log(loan_amnt))) +
+  geom_point(alpha = .02, color = 'lightblue') + 
+  stat_smooth(method="lm", se=FALSE) +
+  xlab("Log of Annual Income") + 
+  ylab(" Log of Loan Amount") + 
+  ggtitle("Log Plot of Annual Income Vs Loan Amount") +
+  theme(panel.background = element_blank() , axis.line = element_line(colour = 'black'))
+```
+
