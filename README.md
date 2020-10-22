@@ -8,6 +8,7 @@ Using tidyverse and the strength of ggplot2, making impacting visualizations.
 
 ```bash
 library(tidyverse)
+library(patchwork)
 ```
 You can also knit the file to a html document
 
@@ -15,6 +16,7 @@ You can also knit the file to a html document
 
 ```r
 install.packages('tidyverse')
+install.packages('patchwork')
 ```
 
 About R Markdown - https://r4ds.had.co.nz/r-markdown.html#r-markdown-basics
